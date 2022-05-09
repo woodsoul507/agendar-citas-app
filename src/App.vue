@@ -5,7 +5,7 @@
   <button @click="getCitas">Buscar</button>
   <button @click="isAgendar = true" class="block-button">AGENDAR CITA</button>
   <hr>
-  <div v-if="typeof citas !== 'string' && !isAgendar">
+  <div v-if="citas !== 'Placa no encontrada.' && !isAgendar">
     <span v-for="cita in citas" :key="cita.id">
       Placa: {{ cita.placa }} Fecha: {{ cita.fecha }}
     </span>
@@ -36,6 +36,7 @@ export default {
     citaAgendada() {
       alert("Cita agendada exitosamente.")
       this.isAgendar = false
+      this.citas = ''
     },
 
     async getCitas() {
