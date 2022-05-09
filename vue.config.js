@@ -6,5 +6,8 @@ module.exports = defineConfig({
     : '/',
   devServer: {
     proxy: 'https://citavehiculosapi2022.azurewebsites.net/api/Citas/',
+},
+configureWebpack: {
+  devtool: 'source-map'
 }
 })
