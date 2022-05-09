@@ -5,7 +5,14 @@
   <button @click="getCitas">Buscar</button>
   <button @click="isAgendar = true" class="block-button">AGENDAR CITA</button>
   <hr>
-  <p v-if="cita != '' && !isAgendar">{{ cita }}</p>
+  <div v-if="typeof citas !== 'string' && !isAgendar">
+    <span v-for="cita in citas" :key="cita.id">
+      Placa: {{ cita.placa }} Fecha: {{ cita.fecha }}
+    </span>
+  </div>
+  <span v-else>
+    {{ citas }}
+  </span>
   <AgendarComponent v-if="isAgendar" @citaAgendada="citaAgendada()" />
 </template>
 
@@ -21,7 +28,7 @@ export default {
     return {
       buscar: '',
       isAgendar: false,
-      cita: ''
+      citas: ''
     }
   },
 
@@ -40,10 +47,10 @@ export default {
       try {
         const data = await fetch(URL + 'api/Citas/placa/' + this.buscar, requestOptions)
           .then(response => response.json())
-        const dateArray = data.fecha.split('T')
-        this.cita = 'Placa: ' + data.placa + ' Fecha: ' + dateArray[0] + ' ' + this.convertirHora(dateArray[1])
+        console.log(data)
+        this.citas = data
       } catch (error) {
-        this.cita = 'Placa no encontrada.'
+        this.citas = 'Placa no encontrada.'
       }
     },
     convertirHora(time) {
@@ -79,5 +86,10 @@ export default {
   margin-top: 10px;
   width: 20%;
   display: block;
+}
+
+span {
+  display: block;
+  margin: 5px;
 }
 </style>
