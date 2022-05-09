@@ -70,10 +70,13 @@ export default {
         "id": 0,
         "fecha": new Date(
           `${this.inputDate} ${this.inputHour}:${this.inputMinutes} ${this.inputMeridiano}`
-        ).toJSON(),
+        ),
         "atendida": false,
         "placa": this.placa
       }
+
+      cita.fecha.setHours(cita.fecha.getHours() - 5)
+      cita.fecha = cita.fecha.toJSON()
 
       console.log('CITA', cita)
 

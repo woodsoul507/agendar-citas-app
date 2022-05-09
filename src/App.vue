@@ -62,7 +62,6 @@ export default {
 
       if (hora.length > 1) {
         hora = hora.slice(1)
-        hora[0] = hora[0] - 5
         hora[5] = +hora[0] < 12 ? 'AM' : 'PM'
         hora[0] = +hora[0] % 12 || 12
       }
