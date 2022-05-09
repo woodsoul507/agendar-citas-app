@@ -47,21 +47,24 @@ export default {
       try {
         const data = await fetch(URL + 'api/Citas/placa/' + this.buscar, requestOptions)
           .then(response => response.json())
-        console.log(data)
+        data.forEach(cita => {
+          cita.fecha = this.convertirHora(cita.fecha)
+        })
         this.citas = data
       } catch (error) {
         this.citas = 'Placa no encontrada.'
       }
     },
-    convertirHora(time) {
-      time = time.toString().match(/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
+    convertirHora(fecha) {
+      const fechaArray = fecha.split('T')
+      let hora = fechaArray[1].toString().match(/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [fechaArray[1]];
 
-      if (time.length > 1) {
-        time = time.slice(1);
-        time[5] = +time[0] < 12 ? 'AM' : 'PM';
-        time[0] = +time[0] % 12 || 12;
+      if (hora.length > 1) {
+        hora = hora.slice(1)
+        hora[5] = +hora[0] < 12 ? 'AM' : 'PM'
+        hora[0] = +hora[0] % 12 || 12
       }
-      return time.join('');
+      return fechaArray[0] + ' ' + hora.join('')
     }
   },
 
