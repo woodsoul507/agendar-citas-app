@@ -58,9 +58,11 @@ export default {
     convertirHora(fecha) {
       const fechaArray = fecha.split('T')
       let hora = fechaArray[1].toString().match(/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [fechaArray[1]];
+      console.log('Hora' + fechaArray[1], hora)
 
       if (hora.length > 1) {
         hora = hora.slice(1)
+        hora[0] = hora[0] - 5
         hora[5] = +hora[0] < 12 ? 'AM' : 'PM'
         hora[0] = +hora[0] % 12 || 12
       }
