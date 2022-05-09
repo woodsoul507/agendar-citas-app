@@ -78,8 +78,6 @@ export default {
       cita.fecha.setHours(cita.fecha.getHours() - 5)
       cita.fecha = cita.fecha.toJSON()
 
-      console.log('CITA', cita)
-
       const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },

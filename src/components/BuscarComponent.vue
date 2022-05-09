@@ -29,7 +29,6 @@ export default {
         headers: { "Content-Type": "application/json" }
       }
       try {
-        console.log(URL + 'api/Citas/placa/' + this.buscar)
         const data = await fetch(URL + 'api/Citas/placa/' + this.buscar, requestOptions)
           .then(response => response.json())
           .then(data => {
