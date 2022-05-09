@@ -3,7 +3,7 @@
   <label for="buscar">Buscar por numero de placa </label>
   <input v-model="this.buscar" type="text" name="buscar" placeholder="Ingrese su placa">
   <button @click="getCitas">Buscar</button>
-  <button @click="isAgendar = true" class="block-button">AGENDAR CITA</button>
+  <button @click="isAgendar = true; citas = ''" class="block-button">AGENDAR CITA</button>
   <hr>
   <div v-if="citas !== 'Placa no encontrada.' && !isAgendar">
     <span v-for="cita in citas" :key="cita.id">
@@ -36,7 +36,6 @@ export default {
     citaAgendada() {
       alert("Cita agendada exitosamente.")
       this.isAgendar = false
-      this.citas = ''
     },
 
     async getCitas() {
