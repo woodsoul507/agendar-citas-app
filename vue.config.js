@@ -2,6 +2,6 @@ const { defineConfig } = require('@vue/cli-service')
 module.exports = defineConfig({
   transpileDependencies: true,
   devServer: {
-    proxy: 'http://localhost:5064/api/Citas/',
+    proxy: 'https://citavehiculosapi2022.azurewebsites.net/api/Citas/',
 }
 })
