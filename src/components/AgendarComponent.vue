@@ -1,14 +1,15 @@
 <template>
-  <div>
-    <h2>Agendar Cita</h2>
-    <label for="placa">Placa: </label>
-    <input v-model="placa" name="placa" type="text" placeholder="placa">
+  <div class="card-normal">
+    <h2 class="label-text text-lg mb-2">Ingrese numero de placa y fecha</h2>
+    <label class="label" for="placa">Placa </label>
+    <input required class="input input-bordered max-w-xs" v-model="placa" name="placa" type="text"
+      placeholder="Ingrese la placa">
 
-    <label for="fecha">Fecha: </label>
-    <input v-model="inputDate" type="date" id="date" :min="minDate" name="fecha">
+    <label class="label" for="fecha">Fecha</label>
+    <input required v-model="inputDate" type="date" id="date" :min="minDate" name="fecha">
 
-    <label for="hora">Hora: </label>
-    <select v-model="inputHour" name="hora" id="cars">
+    <label class="label" for="hora">Hora</label>
+    <select required class="select select-bordered select-sm max-w-xs mx-1" v-model="inputHour" name="hora" id="cars">
       <option value="01">01</option>
       <option value="02">02</option>
       <option value="03">03</option>
@@ -23,17 +24,19 @@
       <option value="12">12</option>
     </select>
 
-    <select v-model="inputMinutes" name="minutos" id="minutos">
+    <select required class="select select-bordered select-sm max-w-xs mx-1" v-model="inputMinutes" name="minutos"
+      id="minutos">
       <option value="00">00</option>
       <option value="30">30</option>
     </select>
 
-    <select v-model="inputMeridiano" name="meridiano" id="meridiano">
+    <select required class="select select-bordered select-sm max-w-xs mx-1" v-model="inputMeridiano" name="meridiano"
+      id="meridiano">
       <option value="am">am</option>
       <option value="pm">pm</option>
     </select>
 
-    <button @click="postCita">Agendar</button>
+    <button class="btn btn-wide block mt-2 " @click="postCita">Agendar</button>
 
   </div>
 </template>
@@ -65,6 +68,12 @@ export default {
       this.minDate = date.toISOString().split('T')[0]
     },
     async postCita() {
+      if (!this.inputDate || !this.inputHour ||
+        !this.inputMinutes || !this.inputMeridiano
+        || !this.placa) {
+        alert('Uno o mas campos faltan por completar')
+        return
+      }
 
       const cita = {
         "id": 0,
@@ -84,9 +93,12 @@ export default {
         body: JSON.stringify(cita)
       }
       try {
-        await fetch(URL + 'api/Citas', requestOptions)
+        const response = await fetch(URL + 'api/Citas', requestOptions)
           .then(response => response.json())
-        this.$emit('citaAgendada')
+        if (response.statusCode != 200) {
+          this.$emit('citaAgendada', false)
+        }
+        this.$emit('citaAgendada', true)
       } catch (error) {
         console.log(error)
       }
@@ -95,7 +107,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 label {
   margin-left: 10px;
 }

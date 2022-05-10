@@ -1,19 +1,37 @@
 <template>
-  <h1>Citas</h1>
-  <label for="buscar">Buscar por numero de placa </label>
-  <input v-model="this.buscar" type="text" name="buscar" placeholder="Ingrese su placa">
-  <button @click="getCitas">Buscar</button>
-  <button @click="isAgendar = true; citas = ''" class="block-button">AGENDAR CITA</button>
-  <hr>
-  <div v-if="citas !== 'Placa no encontrada.' && !isAgendar">
-    <span v-for="cita in citas" :key="cita.id">
-      Placa: {{ cita.placa }} Fecha: {{ cita.fecha }}
+  <div class="card-body items-center text-center">
+    <h1 class="card-title text-2xl">Citas de Mantenimiento Vehicular</h1>
+    <label class="label-text text-lg" for="buscar">Buscar por numero de placa </label>
+    <div class="table">
+      <input class="input input-bordered max-w-xs mr-2" v-model="this.buscar" type="text" name="buscar"
+        placeholder="Ingrese su placa">
+      <button class="btn" @click="getCitas">Buscar</button>
+    </div>
+    <button class="btn btn-outline btn-wide mt-2" @click="isAgendar = true; citas = ''">Agendar una cita</button>
+    <div class="mt-5" v-if="Array.isArray(citas)">
+      <div class="overflow-x-auto">
+        <table class="table w-full">
+          <thead>
+            <tr>
+              <th>Placa</th>
+              <th>Fecha</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="cita in citas" :key="cita.id">
+              <td>{{ cita.placa }}</td>
+              <td>{{ cita.fecha.replace('0:00') }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <span v-else>
+      {{ citas }}
     </span>
+    <AgendarComponent v-if="isAgendar" @citaAgendada="citaAgendada($emit)" />
   </div>
-  <span v-else>
-    {{ citas }}
-  </span>
-  <AgendarComponent v-if="isAgendar" @citaAgendada="citaAgendada()" />
+
 </template>
 
 <script>
@@ -33,9 +51,13 @@ export default {
   },
 
   methods: {
-    citaAgendada() {
-      alert("Cita agendada exitosamente.")
-      this.isAgendar = false
+    citaAgendada(success) {
+      if (success) {
+        this.isAgendar = false
+        alert("Cita agendada exitosamente.")
+        return
+      }
+      alert("Cita no fue agendada. Intente de nuevo.")
     },
 
     async getCitas() {
@@ -47,12 +69,18 @@ export default {
       try {
         const data = await fetch(URL + 'api/Citas/placa/' + this.buscar, requestOptions)
           .then(response => response.json())
-        data.forEach(cita => {
+
+        if (data.statusCode != 200) {
+          this.citas = data.value
+          return
+        }
+
+        data.value.forEach(cita => {
           cita.fecha = this.convertirHora(cita.fecha)
         })
-        this.citas = data
+        this.citas = data.value
       } catch (error) {
-        this.citas = 'Placa no encontrada.'
+        console.log(error)
       }
     },
     convertirHora(fecha) {
@@ -64,7 +92,7 @@ export default {
         hora[5] = +hora[0] < 12 ? 'AM' : 'PM'
         hora[0] = +hora[0] % 12 || 12
       }
-      return fechaArray[0] + ' ' + hora.join('')
+      return fechaArray[0] + ' ' + hora.join('').replace(':00AM', ' AM').replace(':00PM', ' PM')
     }
   },
 
@@ -81,18 +109,7 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
-}
-
-.block-button {
-  margin: auto;
-  margin-top: 10px;
-  width: 20%;
-  display: block;
-}
-
-span {
-  display: block;
-  margin: 5px;
+  margin: 0px;
+  padding: 0px;
 }
 </style>
